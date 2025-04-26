@@ -1,0 +1,12 @@
+{% extends 'budget/base.html' %}
+
+{% block title %}Добавить расход{% endblock %}
+
+{% block content %}
+<h1>Добавить расход</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

@@ -1,4 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import IncomeForm, ExpenseForm
+
+def add_income(request):
+    if request.method == 'POST':
+        form = IncomeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('income_list')
+    else:
+        form = IncomeForm()
+    return render(request, 'budget/add_income.html', {'form': form})
+
+def add_expense(request):
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('expense_list')
+    else:
+        form = ExpenseForm()
+    return render(request, 'budget/add_expense.html', {'form': form})
 
 def home(request):
     return render(request, 'budget/base.html')
