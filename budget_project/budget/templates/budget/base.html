@@ -26,6 +26,20 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>Управление личным бюджетом</h1>
+        {% if user.is_authenticated %}
+        <!-- Если пользователь авторизован: ссылки на добавление доходов, расходов, анализа -->
+        <a href="{% url 'add_income' %}">Добавить доход</a>
+        <a href="{% url 'add_expense' %}">Добавить расход</a>
+        <a href="{% url 'analysis' %}">Анализ</a>
+        <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+        <!-- Если пользователь не авторизован: ссылки на регистрацию и вход -->
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
+        <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </header>
     <nav>
         <ul>
             <li><a href="{% url 'home' %}">Главная</a></li>
