@@ -50,7 +50,15 @@
     </nav>
 
     <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% if user.is_authenticated %}
+        <h1>Ваши финансовые данные</h1>
+
+        <p>Общие доходы: {{ total_income }} ₽</p>
+        <p>Общие расходы: {{ total_expense }} ₽</p>
+        <h2>Баланс: {{ balance }} ₽</h2>
+        {% endif %}
+        {% endblock %}
     </div>
 </body>
 </html>

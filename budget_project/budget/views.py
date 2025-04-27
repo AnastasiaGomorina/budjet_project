@@ -1,7 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 from .forms import IncomeForm, ExpenseForm
 from .models import Income, Expense, IncomeCategory, ExpenseCategory
+
 
 def register(request):
     if request.method == 'POST':
@@ -48,8 +50,35 @@ def add_expense(request):
     return render(request, 'budget/add_expense.html', {'form': form})
 
 def home(request):
-    return render(request, 'budget/base.html')
+    if request.user.is_authenticated:
+        # Доходы и расходы для текущего авторизованного пользователя
+        incomes = Income.objects.filter(user=request.user)
+        expenses = Expense.objects.filter(user=request.user)
+
+        # Считаем общие суммы
+        total_income = sum(income.amount for income in incomes)
+        total_expense = sum(expense.amount for expense in expenses)
+
+        # Вычисляем баланс
+        balance = total_income - total_expense
+
+        # Передаем данные в шаблон
+        return render(request, 'budget/base.html', {
+            'total_income': total_income,
+            'total_expense': total_expense,
+            'balance': balance,
+        })
+    else:
+        # Для неавторизованных пользователей просто передаем пустые значения
+        return render(request, 'budget/base.html', {
+            'total_income': 0,
+            'total_expense': 0,
+            'balance': 0,
+        })
 
 def analysis_view(request):
     return render(request, 'budget/analysis.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('home')
