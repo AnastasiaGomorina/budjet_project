@@ -4,5 +4,11 @@
 
 {% block content %}
 <h1>Список доходов</h1>
-<p>Здесь будет отображаться список ваших доходов.</p>
+<ul>
+    {% for income in incomes %}
+    <li>{{ income.amount }} - {{ income.category }} ({{ income.date }})</li>
+    {% empty %}
+    <p>Нет доходов.</p>
+    {% endfor %}
+</ul>
 {% endblock %}

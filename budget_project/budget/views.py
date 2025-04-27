@@ -14,6 +14,15 @@ def register(request):
     return render(request, 'budget/register.html', {'form': form})
 
 
+def income_list(request):
+    incomes = Income.objects.filter(user=request.user)
+    return render(request, 'budget/income_list.html', {'incomes': incomes})
+
+def expense_list(request):
+    expenses = Expense.objects.filter(user=request.user)
+    return render(request, 'budget/expense_list.html', {'expenses': expenses})
+
+
 def add_income(request):
     if request.method == 'POST':
         form = IncomeForm(request.POST)
@@ -40,12 +49,6 @@ def add_expense(request):
 
 def home(request):
     return render(request, 'budget/base.html')
-
-def income_list(request):
-    return render(request, 'budget/income_list.html')
-
-def expense_list(request):
-    return render(request, 'budget/expense_list.html')
 
 def analysis_view(request):
     return render(request, 'budget/analysis.html')

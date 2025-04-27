@@ -4,5 +4,11 @@
 
 {% block content %}
 <h1>Список расходов</h1>
-<p>Здесь будет отображаться список ваших расходов.</p>
+<ul>
+    {% for expense in expenses %}
+    <li>{{ expense.amount }} - {{ expense.category }} ({{ expense.date }})</li>
+    {% empty %}
+    <p>Нет расходов.</p>
+    {% endfor %}
+</ul>
 {% endblock %}
