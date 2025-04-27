@@ -1,5 +1,17 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import IncomeForm, ExpenseForm
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'budget/register.html', {'form': form})
+
 
 def add_income(request):
     if request.method == 'POST':
@@ -32,3 +44,4 @@ def expense_list(request):
 
 def analysis_view(request):
     return render(request, 'budget/analysis.html')
+
