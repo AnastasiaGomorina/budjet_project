@@ -30,10 +30,11 @@
         <h1>Управление личным бюджетом</h1>
         {% if user.is_authenticated %}
         <!-- Если пользователь авторизован: ссылки на добавление доходов, расходов, анализа -->
-        <a href="{% url 'add_income' %}">Добавить доход</a>
-        <a href="{% url 'add_expense' %}">Добавить расход</a>
-        <a href="{% url 'analysis' %}">Анализ</a>
-        <a href="{% url 'logout' %}">Выйти</a>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><a href="{% url 'income_list' %}">Доходы</a></li>
+        <li><a href="{% url 'expense_list' %}">Расходы</a></li>
+        <li><a href="{% url 'analysis' %}">Анализ</a></li>
+        <li><a href="{% url 'logout' %}">Выйти</a></li>
         {% else %}
         <!-- Если пользователь не авторизован: ссылки на регистрацию и вход -->
         <a href="{% url 'register' %}">Зарегистрироваться</a>
@@ -42,21 +43,25 @@
     </header>
     <nav>
         <ul>
-            <li><a href="{% url 'home' %}">Главная</a></li>
-            <li><a href="{% url 'income_list' %}">Доходы</a></li>
-            <li><a href="{% url 'expense_list' %}">Расходы</a></li>
-            <li><a href="{% url 'analysis' %}">Анализ</a></li>
+            {% if user.is_authenticated %}
+            {% if request.path == '/' %}
+            <h2>Добро пожаловать, {{ user.username }}!</h2>
+            {% endif %}
+            <!-- Тут можно оставить, например, краткую статистику -->
+            {% else %}
+            <h2>Добро пожаловать в приложение для ведения личного бюджета!</h2>
+            <p>Отслеживайте свои доходы и расходы, анализируйте финансы и достигайте финансовых целей легко и удобно.</p>
+            {% endif %}
         </ul>
     </nav>
 
     <div class="content">
         {% block content %}
         {% if user.is_authenticated %}
-        <h1>Ваши финансовые данные</h1>
-
+        <h1>Ваши финансовые данные:</h1>
+        <h2>Баланс: {{ balance }} ₽</h2>
         <p>Общие доходы: {{ total_income }} ₽</p>
         <p>Общие расходы: {{ total_expense }} ₽</p>
-        <h2>Баланс: {{ balance }} ₽</h2>
         {% endif %}
         {% endblock %}
     </div>

@@ -1,9 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect
-from .forms import IncomeForm, ExpenseForm
+from .forms import IncomeForm, ExpenseForm, PeriodForm
 from django.db.models import Sum
 from .models import Income, Expense, IncomeCategory, ExpenseCategory
+from django.contrib.auth.decorators import login_required
+from datetime import date
 
 
 def register(request):
@@ -26,26 +28,28 @@ def expense_list(request):
     return render(request, 'budget/expense_list.html', {'expenses': expenses})
 
 
+@login_required
 def add_income(request):
     if request.method == 'POST':
         form = IncomeForm(request.POST)
         if form.is_valid():
-            income = form.save(commit=False)
-            income.user = request.user  # Присваиваем текущего пользователя
-            income.save()
-            return redirect('home')
+            income = form.save(commit=False)  # ещё не сохраняем в базу
+            income.user = request.user        # подставляем текущего пользователя
+            income.save()                     # теперь сохраняем
+            return redirect('income_list')
     else:
         form = IncomeForm()
     return render(request, 'budget/add_income.html', {'form': form})
 
+@login_required
 def add_expense(request):
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
         if form.is_valid():
             expense = form.save(commit=False)
-            expense.user = request.user  # Присваиваем текущего пользователя
+            expense.user = request.user
             expense.save()
-            return redirect('home')
+            return redirect('expense_list')
     else:
         form = ExpenseForm()
     return render(request, 'budget/add_expense.html', {'form': form})
@@ -77,17 +81,38 @@ def home(request):
             'balance': 0,
         })
 
+
 def analysis_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    incomes_by_category = Income.objects.filter(user=request.user).values('category__name').annotate(total=Sum('amount'))
-    expenses_by_category = Expense.objects.filter(user=request.user).values('category__name').annotate(total=Sum('amount'))
+    form = PeriodForm(request.GET)
 
-    return render(request, 'budget/analysis.html', {
-        'incomes_by_category': incomes_by_category,
-        'expenses_by_category': expenses_by_category,
-    })
+    if form.is_valid():
+        # Извлекаем значения из формы
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+
+        # Фильтруем по датам
+        incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date])
+        expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date])
+
+        print(f"Start Date: {start_date}, End Date: {end_date}")  # Для отладки
+
+        # Группируем по категориям и вычисляем сумму
+        incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
+        expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
+
+        return render(request, 'budget/analysis.html', {
+            'form': form,
+            'incomes_by_category': incomes_by_category,
+            'expenses_by_category': expenses_by_category
+        })
+    else:
+        # Если форма не валидна, показываем только форму
+        return render(request, 'budget/analysis.html', {'form': form})
+
+
 
 def logout_view(request):
     logout(request)

@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>Список доходов</h1>
+<a href="{% url 'add_income' %}" class="btn">Добавить доход</a>
 <ul>
     {% for income in incomes %}
     <li>{{ income.amount }} - {{ income.category }} ({{ income.date }})</li>
