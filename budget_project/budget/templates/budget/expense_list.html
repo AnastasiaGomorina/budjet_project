@@ -5,11 +5,35 @@
 {% block content %}
 <h1>Список расходов</h1>
 <a href="{% url 'add_expense' %}" class="btn">Добавить расход</a>
-<ul>
-    {% for expense in expenses %}
-    <li>{{ expense.amount }} - {{ expense.category }} ({{ expense.date }})</li>
-    {% empty %}
-    <p>Нет расходов.</p>
-    {% endfor %}
-</ul>
+<form method="get" class="mb-4">
+    {{ form.as_p }}
+    <button type="submit">Показать</button>
+    <a href="{% url 'expense_list' %}"><button type="button">Сбросить</button></a>
+</form>
+{% if no_expenses %}
+<p>Расходов за выбранный период нет.</p>
+{% else %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Категория</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense.date }}</td>
+            <td>{{ expense.category.name }}</td>
+            <td>{{ expense.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"><strong>Итого</strong></td>
+            <td><strong>{{ total_expense }} ₽</strong></td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
 {% endblock %}

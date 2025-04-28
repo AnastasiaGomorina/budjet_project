@@ -4,50 +4,45 @@
 
 {% block content %}
 <h2>Анализ доходов и расходов по категориям</h2>
-
-<form method="get">
-    {% csrf_token %}
+<form method="get" class="mb-4">
     {{ form.as_p }}
-    <button type="submit">Показать анализ</button>
+    <button type="submit">Показать</button>
+    <a href="{% url 'analysis' %}"><button type="button">Сбросить</button></a>
 </form>
 
-{% if form.is_valid %}
-    <h3>Доходы</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Категория</th>
-            <th>Сумма (₽)</th>
-        </tr>
-        {% for income in incomes_by_category %}
-        <tr>
-            <td>{{ income.category__name }}</td>
-            <td>{{ income.total }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="2">Нет данных о доходах</td>
-        </tr>
-        {% endfor %}
-    </table>
+<h3>Доходы</h3>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Категория</th>
+        <th>Сумма (₽)</th>
+    </tr>
+    {% for income in incomes_by_category %}
+    <tr>
+        <td>{{ income.category__name }}</td>
+        <td>{{ income.total }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">Нет данных о доходах</td>
+    </tr>
+    {% endfor %}
+</table>
 
-    <h3>Расходы</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Категория</th>
-            <th>Сумма (₽)</th>
-        </tr>
-        {% for expense in expenses_by_category %}
-        <tr>
-            <td>{{ expense.category__name }}</td>
-            <td>{{ expense.total }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="2">Нет данных о расходах</td>
-        </tr>
-        {% endfor %}
-    </table>
-{% elif form %}
-<p>Пожалуйста, укажите период, по которому хотите просмотреть анализ доходов и расходов.</p>
-  {% endif %}
+<h3>Расходы</h3>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Категория</th>
+        <th>Сумма (₽)</th>
+    </tr>
+    {% for expense in expenses_by_category %}
+    <tr>
+        <td>{{ expense.category__name }}</td>
+        <td>{{ expense.total }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">Нет данных о расходах</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

@@ -59,9 +59,10 @@
         {% block content %}
         {% if user.is_authenticated %}
         <h1>Ваши финансовые данные:</h1>
-        <h2>Баланс: {{ balance }} ₽</h2>
-        <p>Общие доходы: {{ total_income }} ₽</p>
-        <p>Общие расходы: {{ total_expense }} ₽</p>
+        <p><strong>Баланс:</strong> {{ balance }} ₽</p>
+        <h3>Доходы и расходы за {{ current_month }}:</h3>
+        <p><strong>Доходы:</strong> {{ total_income_month }} ₽</p>
+        <p><strong>Расходы:</strong> {{ total_expense_month }} ₽</p>
         {% endif %}
         {% endblock %}
     </div>

@@ -5,11 +5,35 @@
 {% block content %}
 <h1>Список доходов</h1>
 <a href="{% url 'add_income' %}" class="btn">Добавить доход</a>
-<ul>
-    {% for income in incomes %}
-    <li>{{ income.amount }} - {{ income.category }} ({{ income.date }})</li>
-    {% empty %}
-    <p>Нет доходов.</p>
-    {% endfor %}
-</ul>
+<form method="get" class="mb-4">
+    {{ form.as_p }}
+    <button type="submit">Показать</button>
+    <a href="{% url 'income_list' %}"><button type="button">Сбросить</button></a>
+</form>
+{% if no_incomes %}
+<p>Доходов за выбранный период нет.</p>
+{% else %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Категория</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for income in incomes %}
+        <tr>
+            <td>{{ income.date }}</td>
+            <td>{{ income.category.name }}</td>
+            <td>{{ income.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"><strong>Итого</strong></td>
+            <td><strong>{{ total_income }} ₽</strong></td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
 {% endblock %}

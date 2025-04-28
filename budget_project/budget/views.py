@@ -6,6 +6,7 @@ from django.db.models import Sum
 from .models import Income, Expense, IncomeCategory, ExpenseCategory
 from django.contrib.auth.decorators import login_required
 from datetime import date
+import calendar
 
 
 def register(request):
@@ -19,13 +20,76 @@ def register(request):
     return render(request, 'budget/register.html', {'form': form})
 
 
-def income_list(request):
-    incomes = Income.objects.filter(user=request.user)
-    return render(request, 'budget/income_list.html', {'incomes': incomes})
+def incomes_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    today = date.today()
+    default_start_date = date(today.year, today.month, 1)
+    last_day = calendar.monthrange(today.year, today.month)[1]
+    default_end_date = date(today.year, today.month, last_day)
+
+    if request.GET:
+        form = PeriodForm(request.GET)
+    else:
+        form = PeriodForm(initial={
+            'start_date': default_start_date,
+            'end_date': default_end_date
+        })
+
+    if form.is_valid():
+        # Если пользователь ввел период
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+    else:
+        # Иначе — текущий месяц
+        start_date = default_start_date
+        end_date = default_end_date
+
+    incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date]).order_by('date')
+
+    # Подсчитываем общую сумму доходов за выбранный период
+    total_income = incomes.aggregate(total=Sum('amount'))['total'] or 0
+
+    # Проверка, есть ли доходы
+    no_incomes = incomes.count() == 0
+
+    return render(request, 'budget/income_list.html', {'form': form, 'incomes': incomes, 'total_income': total_income, 'no_incomes': no_incomes})
 
 def expense_list(request):
-    expenses = Expense.objects.filter(user=request.user)
-    return render(request, 'budget/expense_list.html', {'expenses': expenses})
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    today = date.today()
+    default_start_date = date(today.year, today.month, 1)
+    last_day = calendar.monthrange(today.year, today.month)[1]
+    default_end_date = date(today.year, today.month, last_day)
+
+    if request.GET:
+        form = PeriodForm(request.GET)
+    else:
+        form = PeriodForm(initial={
+            'start_date': default_start_date,
+            'end_date': default_end_date
+        })
+
+    if form.is_valid():
+        # Если пользователь ввел период
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+    else:
+        # Иначе — текущий месяц
+        start_date = default_start_date
+        end_date = default_end_date
+
+    expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date]).order_by('date')
+
+    total_expense = expenses.aggregate(total=Sum('amount'))['total'] or 0
+
+    # Проверка, есть ли доходы
+    no_expenses = expenses.count() == 0
+
+    return render(request, 'budget/expense_list.html', {'form': form, 'expenses': expenses, 'total_expense': total_expense, 'no_expenses': no_expenses})
 
 
 @login_required
@@ -54,30 +118,58 @@ def add_expense(request):
         form = ExpenseForm()
     return render(request, 'budget/add_expense.html', {'form': form})
 
+MONTHS_RU = {
+    1: "Январь",
+    2: "Февраль",
+    3: "Март",
+    4: "Апрель",
+    5: "Май",
+    6: "Июнь",
+    7: "Июль",
+    8: "Август",
+    9: "Сентябрь",
+    10: "Октябрь",
+    11: "Ноябрь",
+    12: "Декабрь",
+}
+
 def home(request):
     if request.user.is_authenticated:
-        # Доходы и расходы для текущего авторизованного пользователя
-        incomes = Income.objects.filter(user=request.user)
-        expenses = Expense.objects.filter(user=request.user)
+        # Баланс за всё время
+        total_income_all = Income.objects.filter(user=request.user).aggregate(total=Sum('amount'))['total'] or 0
+        total_expense_all = Expense.objects.filter(user=request.user).aggregate(total=Sum('amount'))['total'] or 0
+        balance = total_income_all - total_expense_all
 
-        # Считаем общие суммы
-        total_income = sum(income.amount for income in incomes)
-        total_expense = sum(expense.amount for expense in expenses)
+        # Даты текущего месяца
+        today = date.today()
+        start_date = date(today.year, today.month, 1)
+        last_day = calendar.monthrange(today.year, today.month)[1]
+        end_date = date(today.year, today.month, last_day)
 
-        # Вычисляем баланс
-        balance = total_income - total_expense
+        # Доходы и расходы за текущий месяц
+        total_income_month = Income.objects.filter(
+            user=request.user,
+            date__range=[start_date, end_date]
+        ).aggregate(total=Sum('amount'))['total'] or 0
 
-        # Передаем данные в шаблон
+        total_expense_month = Expense.objects.filter(
+            user=request.user,
+            date__range=[start_date, end_date]
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        current_month_ru = f"{MONTHS_RU[today.month]} {today.year}"
+
         return render(request, 'budget/base.html', {
-            'total_income': total_income,
-            'total_expense': total_expense,
             'balance': balance,
+            'total_income_month': total_income_month,
+            'total_expense_month': total_expense_month,
+            'current_month': current_month_ru,  # например, "Апрель 2025"
         })
     else:
         # Для неавторизованных пользователей просто передаем пустые значения
         return render(request, 'budget/base.html', {
-            'total_income': 0,
-            'total_expense': 0,
+            'total_income_month': 0,
+            'total_expense_month': 0,
             'balance': 0,
         })
 
@@ -86,31 +178,56 @@ def analysis_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    form = PeriodForm(request.GET)
+    today = date.today()
+    default_start_date = date(today.year, today.month, 1)
+    last_day = calendar.monthrange(today.year, today.month)[1]
+    default_end_date = date(today.year, today.month, last_day)
+
+    if request.GET:
+        form = PeriodForm(request.GET)
+    else:
+        form = PeriodForm(initial={
+            'start_date': default_start_date,
+            'end_date': default_end_date
+        })
 
     if form.is_valid():
-        # Извлекаем значения из формы
+        # Если пользователь ввел период
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
-
-        # Фильтруем по датам
-        incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date])
-        expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date])
-
-        print(f"Start Date: {start_date}, End Date: {end_date}")  # Для отладки
-
-        # Группируем по категориям и вычисляем сумму
-        incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
-        expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
-
-        return render(request, 'budget/analysis.html', {
-            'form': form,
-            'incomes_by_category': incomes_by_category,
-            'expenses_by_category': expenses_by_category
-        })
     else:
-        # Если форма не валидна, показываем только форму
-        return render(request, 'budget/analysis.html', {'form': form})
+        # Иначе — текущий месяц
+        start_date = default_start_date
+        end_date = default_end_date
+
+    # Фильтруем по датам
+    incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date])
+    expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date])
+
+    # Группируем по категориям и вычисляем сумму
+    incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
+    expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
+
+    # Сортируем по алфавиту, но перемещаем "Другое" в конец
+    def custom_sort(queryset):
+        sorted_queryset = sorted(queryset, key=lambda x: x['category__name'])
+        # Перемещаем "Другое" в конец
+        for i, item in enumerate(sorted_queryset):
+            if item['category__name'] == 'Другое':
+                # Удаляем "Другое" из списка
+                sorted_queryset.append(sorted_queryset.pop(i))
+                break
+        return sorted_queryset
+
+    # Применяем сортировку
+    incomes_by_category = custom_sort(incomes_by_category)
+    expenses_by_category = custom_sort(expenses_by_category)
+
+    return render(request, 'budget/analysis.html', {
+        'form': form,
+        'incomes_by_category': incomes_by_category,
+        'expenses_by_category': expenses_by_category,
+    })
 
 
 
