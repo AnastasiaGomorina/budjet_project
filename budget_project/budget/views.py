@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 from .forms import IncomeForm, ExpenseForm
+from django.db.models import Sum
 from .models import Income, Expense, IncomeCategory, ExpenseCategory
 
 
@@ -77,7 +78,16 @@ def home(request):
         })
 
 def analysis_view(request):
-    return render(request, 'budget/analysis.html')
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    incomes_by_category = Income.objects.filter(user=request.user).values('category__name').annotate(total=Sum('amount'))
+    expenses_by_category = Expense.objects.filter(user=request.user).values('category__name').annotate(total=Sum('amount'))
+
+    return render(request, 'budget/analysis.html', {
+        'incomes_by_category': incomes_by_category,
+        'expenses_by_category': expenses_by_category,
+    })
 
 def logout_view(request):
     logout(request)
