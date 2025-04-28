@@ -3,8 +3,10 @@
 {% block title %}Расходы{% endblock %}
 
 {% block content %}
-<h1>Список расходов</h1>
-<a href="{% url 'add_expense' %}" class="btn">Добавить расход</a>
+<div class="header-with-button">
+    <h1>Список расходов</h1>
+    <a href="{% url 'add_expense' %}" class="btn">Добавить расход</a>
+</div>
 <form method="get" class="mb-4">
     {{ form.as_p }}
     <button type="submit">Показать</button>

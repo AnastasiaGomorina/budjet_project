@@ -1,8 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Личный бюджет{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'budget/css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <style>
         body {
@@ -10,15 +12,12 @@
             margin: 20px;
         }
 
-        nav a {
-            margin: 10px;
-            text-decoration: none;
-            color: blue;
+        header {
+            background-color: #a8d5a2; /* светло-зелёный цвет */
+            color: white;
+            padding: 20px;
+            text-align: center;
         }
-
-            nav a:hover {
-                text-decoration: underline;
-            }
 
         .content {
             margin-top: 20px;
@@ -26,33 +25,42 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Управление личным бюджетом</h1>
+    <header class="main-header">
+        <h1 class="header-title">Управление личным бюджетом</h1>
+
         {% if user.is_authenticated %}
-        <!-- Если пользователь авторизован: ссылки на добавление доходов, расходов, анализа -->
-        <li><a href="{% url 'home' %}">Главная</a></li>
-        <li><a href="{% url 'income_list' %}">Доходы</a></li>
-        <li><a href="{% url 'expense_list' %}">Расходы</a></li>
-        <li><a href="{% url 'analysis' %}">Анализ</a></li>
-        <li><a href="{% url 'logout' %}">Выйти</a></li>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li><a href="{% url 'income_list' %}">Доходы</a></li>
+                <li><a href="{% url 'expense_list' %}">Расходы</a></li>
+                <li><a href="{% url 'analysis' %}">Анализ</a></li>
+                <li><a href="{% url 'logout' %}">Выйти</a></li>
+            </ul>
+        </nav>
         {% else %}
-        <!-- Если пользователь не авторизован: ссылки на регистрацию и вход -->
-        <a href="{% url 'register' %}">Зарегистрироваться</a>
-        <a href="{% url 'login' %}">Войти</a>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+                <li><a href="{% url 'login' %}">Войти</a></li>
+            </ul>
+        </nav>
         {% endif %}
     </header>
+
     <nav>
-        <ul>
-            {% if user.is_authenticated %}
-            {% if request.path == '/' %}
+        {% if user.is_authenticated %}
+        {% if request.path == '/' %}
+        <div class="centered-text">
             <h2>Добро пожаловать, {{ user.username }}!</h2>
-            {% endif %}
-            <!-- Тут можно оставить, например, краткую статистику -->
-            {% else %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="centered-text">
             <h2>Добро пожаловать в приложение для ведения личного бюджета!</h2>
             <p>Отслеживайте свои доходы и расходы, анализируйте финансы и достигайте финансовых целей легко и удобно.</p>
-            {% endif %}
-        </ul>
+        </div>
+        {% endif %}
     </nav>
 
     <div class="content">
@@ -67,4 +75,5 @@
         {% endblock %}
     </div>
 </body>
+
 </html>

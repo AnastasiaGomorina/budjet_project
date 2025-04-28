@@ -1,0 +1,142 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Заголовки */
+h1, h2, h3 {
+    font-weight: bold;
+    color: #333;
+}
+
+.centered-text {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.main-header {
+    background-color: #d6f5d6; /* светло-зелёный фон */
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+    margin: 0;
+    font-size: 32px;
+    color: #333;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+    .navbar ul li {
+        display: inline;
+    }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .navbar ul li a:hover {
+                background-color: #b2e6b2; /* немного темнее при наведении */
+            }
+
+/* Выравнивание текста для приветственного сообщения */
+h2 {
+    margin-left: 0px; /* такой же отступ, как у body */
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px; /* нормальный, но аккуратный размер */
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px; /* нормальный шрифт, как у заголовков */
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+
+.header-with-button {
+    display: flex;
+    align-items: center;
+    gap: 35px; /* расстояние между заголовком и кнопкой */
+    margin-bottom: 20px;
+}
+
+
+
+/* Форма (например, для анализа) */
+form {
+    margin: 20px 0;
+}
+
+input, select, button {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Табы или секции */
+section {
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Таблица */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+    table th, table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #f8f8f8;
+    }
+
+/* Строка итогов */
+tfoot td {
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Кнопки */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #45a049;
+    }

@@ -3,13 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
+    <style>
+        /* Стили для контейнера формы */
+        .form-container {
+            max-width: 400px; /* Ширина формы */
+            margin: 50px auto; /* Центрируем форму по экрану */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px; /* Округление углов */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Заголовки формы */
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Стили для каждого поля ввода */
+        .auth-form input {
+            width: 100%; /* Занимает всю ширину формы */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+            .auth-form input:focus {
+                border-color: #007bff; /* Цвет границы при фокусе */
+                outline: none;
+            }
+
+        /* Стили для кнопки */
+        .btn-submit {
+            width: 100%; /* Ширина кнопки по всей форме */
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+            .btn-submit:hover {
+                background-color: #45a049;
+            }
+
+        /* Стили для ошибок формы */
+        form .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Стили для полей формы */
+        .auth-form p {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h2>Вход</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Войти</button>
-    </form>
+    <div class="form-container">
+        <h2>Вход</h2>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Войти</button>
+            <p>Ещё не зарегистрированы? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+        </form>
+    </div>
 </body>
 </html>
