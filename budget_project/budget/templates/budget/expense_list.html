@@ -21,6 +21,7 @@
             <th>Дата</th>
             <th>Категория</th>
             <th>Сумма</th>
+            <th>Действие</th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +30,9 @@
             <td>{{ expense.date }}</td>
             <td>{{ expense.category.name }}</td>
             <td>{{ expense.amount }}</td>
+            <td>
+                <a href="{% url 'delete_expense' expense.pk %}" onclick="return confirm('Удалить эту запись?');">Удалить</a>
+            </td>
         </tr>
         {% endfor %}
         <tr>

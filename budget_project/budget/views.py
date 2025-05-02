@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IncomeForm, ExpenseForm, PeriodForm
 from django.db.models import Sum
 from .models import Income, Expense, IncomeCategory, ExpenseCategory
@@ -88,6 +88,15 @@ def expense_list(request):
 
     return render(request, 'budget/expense_list.html', {'form': form, 'expenses': expenses, 'total_expense': total_expense, 'no_expenses': no_expenses})
 
+def delete_income(request, pk):
+    income = get_object_or_404(Income, pk=pk, user=request.user)
+    income.delete()
+    return redirect('income_list')
+
+def delete_expense(request, pk):
+    expense = get_object_or_404(Expense, pk=pk, user=request.user)
+    expense.delete()
+    return redirect('expense_list')
 
 @login_required
 def add_income(request):
