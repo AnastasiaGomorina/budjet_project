@@ -1,9 +1,22 @@
 {% extends 'budget/base.html' %}
 
-{% block title %}Добавить расход{% endblock %}
+{% block title %}
+    {% if expense %}
+        Редактировать расход
+    {% else %}
+        Добавить расход
+    {% endif %}
+{% endblock %}
 
 {% block content %}
-<h1>Добавить расход</h1>
+<h1>
+    {% if expense %}
+    Редактировать расход
+    {% else %}
+    Добавить расход
+    {% endif %}
+</h1>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

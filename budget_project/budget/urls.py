@@ -14,4 +14,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('income/delete/<int:pk>/', views.delete_income, name='delete_income'),
     path('expense/delete/<int:pk>/', views.delete_expense, name='delete_expense'),
+    path('income/edit/<int:pk>/', views.edit_income, name='edit_income'),
+    path('expense/edit/<int:pk>/', views.edit_expense, name='edit_expense'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

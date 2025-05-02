@@ -103,13 +103,24 @@ def add_income(request):
     if request.method == 'POST':
         form = IncomeForm(request.POST)
         if form.is_valid():
-            income = form.save(commit=False)  # ещё не сохраняем в базу
-            income.user = request.user        # подставляем текущего пользователя
-            income.save()                     # теперь сохраняем
+            income = form.save(commit=False)
+            income.user = request.user
+            income.save()
             return redirect('income_list')
     else:
         form = IncomeForm()
-    return render(request, 'budget/add_income.html', {'form': form})
+    return render(request, 'budget/add_income.html', {'form': form, 'income': None})
+
+def edit_income(request, pk):
+    income = get_object_or_404(Income, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = IncomeForm(request.POST, instance=income)
+        if form.is_valid():
+            form.save()
+            return redirect('income_list')
+    else:
+        form = IncomeForm(instance=income)
+    return render(request, 'budget/add_income.html', {'form': form, 'income': income})
 
 @login_required
 def add_expense(request):
@@ -122,7 +133,18 @@ def add_expense(request):
             return redirect('expense_list')
     else:
         form = ExpenseForm()
-    return render(request, 'budget/add_expense.html', {'form': form})
+    return render(request, 'budget/add_expense.html', {'form': form, 'expense': None})
+
+def edit_expense(request, pk):
+    expense = get_object_or_404(Expense, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST, instance=expense)
+        if form.is_valid():
+            form.save()
+            return redirect('expense_list')
+    else:
+        form = ExpenseForm(instance=expense)
+    return render(request, 'budget/add_expense.html', {'form': form, 'expense': expense})
 
 MONTHS_RU = {
     1: "Январь",
