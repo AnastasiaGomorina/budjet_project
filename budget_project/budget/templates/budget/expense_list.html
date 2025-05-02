@@ -31,7 +31,7 @@
             <td>{{ expense.category.name }}</td>
             <td>{{ expense.amount }}</td>
             <td>
-                <a href="{% url 'delete_expense' expense.pk %}" onclick="return confirm('Удалить эту запись?');">Удалить</a>
+                <a href="{% url 'delete_expense' expense.pk %}" style="color: green;" onclick="return confirm('Удалить эту запись?');">Удалить</a>
             </td>
         </tr>
         {% endfor %}
