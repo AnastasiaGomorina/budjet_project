@@ -11,38 +11,38 @@
 </form>
 
 <h3>Доходы</h3>
-<table border="1" cellpadding="5">
+{% if no_incomes %}
+<p>Доходов за выбранный период нет.</p>
+{% else %}
+<table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
     <tr>
-        <th>Категория</th>
-        <th>Сумма (₽)</th>
+        <th style="width: 60%;">Категория</th>
+        <th style="width: 40%;">Сумма (₽)</th>
     </tr>
     {% for income in incomes_by_category %}
     <tr>
         <td>{{ income.category__name }}</td>
         <td>{{ income.total }}</td>
     </tr>
-    {% empty %}
-    <tr>
-        <td colspan="2">Нет данных о доходах</td>
-    </tr>
     {% endfor %}
 </table>
+{% endif %}
 
 <h3>Расходы</h3>
-<table border="1" cellpadding="5">
+{% if no_expenses %}
+<p>Расходов за выбранный период нет.</p>
+{% else %}
+<table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
     <tr>
-        <th>Категория</th>
-        <th>Сумма (₽)</th>
+        <th style="width: 60%;">Категория</th>
+        <th style="width: 40%;">Сумма (₽)</th>
     </tr>
     {% for expense in expenses_by_category %}
     <tr>
         <td>{{ expense.category__name }}</td>
         <td>{{ expense.total }}</td>
     </tr>
-    {% empty %}
-    <tr>
-        <td colspan="2">Нет данных о расходах</td>
-    </tr>
     {% endfor %}
 </table>
+{% endif %}
 {% endblock %}

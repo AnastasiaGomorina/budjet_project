@@ -12,40 +12,36 @@ h1, h2, h3 {
     color: #333;
 }
 
-/* Убираем стандартные маркеры списка */
 ul.navbar {
-    list-style-type: none; /* Убираем точки */
+    list-style-type: none; 
     margin: 0;
     padding: 0;
-    display: flex; /* Делаем элементы в строку */
-}
+    display: flex; 
 
 ul.navbar li {
-    margin-right: 20px; /* Отступы между элементами */
+    margin-right: 20px; 
 }
 
 ul.navbar li a {
-    text-decoration: none; /* Убираем подчеркивание */
-    color: #000; /* Цвет текста */
-    font-weight: bold; /* Выделяем жирным */
-}
+    text-decoration: none; 
+    color: #000; 
+    font-weight: bold; 
 
 ul.navbar li a:hover {
-    color: #007bff; /* Цвет текста при наведении */
+    color: #007bff; 
 }
 
-/* Выравнивание текста для приветственного сообщения */
 h2 {
-    margin-left: 0px; /* такой же отступ, как у body */
+    margin-left: 0px; 
 }
 
 .btn {
     background-color: #4CAF50;
     color: white;
-    padding: 8px 16px; /* нормальный, но аккуратный размер */
+    padding: 8px 16px; 
     text-decoration: none;
     border-radius: 5px;
-    font-size: 16px; /* нормальный шрифт, как у заголовков */
+    font-size: 16px; 
 }
 
     .btn:hover {
@@ -60,9 +56,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-
-
-/* Форма (например, для анализа) */
 form {
     margin: 20px 0;
 }
@@ -74,7 +67,6 @@ input, select, button {
     border-radius: 4px;
 }
 
-/* Табы или секции */
 section {
     padding: 20px;
     margin: 10px 0;
@@ -83,7 +75,6 @@ section {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Таблица */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -92,12 +83,13 @@ table {
 
     table th, table td {
         padding: 12px;
-        text-align: left;
+        text-align: center;
         border-bottom: 1px solid #ddd;
     }
 
     table th {
         background-color: #f8f8f8;
+        text-align: center;
     }
 
 /* Строка итогов */
@@ -106,7 +98,6 @@ tfoot td {
     text-align: right;
 }
 
-/* Кнопки */
 button {
     background-color: #4CAF50;
     color: white;

@@ -194,7 +194,7 @@ def home(request):
             'current_month': current_month_ru,  # например, "Апрель 2025"
         })
     else:
-        # Для неавторизованных пользователей просто передаем пустые значения
+        # Для неавторизованных пользователей передаются пустые значения
         return render(request, 'budget/base.html', {
             'total_income_month': 0,
             'total_expense_month': 0,
@@ -231,6 +231,9 @@ def analysis_view(request):
     incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date])
     expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date])
 
+    no_incomes = incomes.count() == 0
+    no_expenses = expenses.count() == 0
+
     incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
     expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
 
@@ -250,6 +253,8 @@ def analysis_view(request):
         'form': form,
         'incomes_by_category': incomes_by_category,
         'expenses_by_category': expenses_by_category,
+        'no_incomes': no_incomes,
+        'no_expenses': no_expenses
     })
 
 

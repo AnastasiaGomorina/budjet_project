@@ -1,4 +1,4 @@
-/* Общие стили */
+п»ї/* РћР±С‰РёРµ СЃС‚РёР»Рё */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
@@ -6,7 +6,7 @@ body {
     padding: 0;
 }
 
-/* Заголовки */
+/* Р—Р°РіРѕР»РѕРІРєРё */
 h1, h2, h3 {
     font-weight: bold;
     color: #333;
@@ -19,7 +19,7 @@ h1, h2, h3 {
 
 
 .main-header {
-    background-color: #d6f5d6; /* светло-зелёный фон */
+    background-color: #d6f5d6; 
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -54,21 +54,20 @@ h1, h2, h3 {
         }
 
             .navbar ul li a:hover {
-                background-color: #b2e6b2; /* немного темнее при наведении */
+                background-color: #b2e6b2; 
             }
 
-/* Выравнивание текста для приветственного сообщения */
 h2 {
-    margin-left: 0px; /* такой же отступ, как у body */
+    margin-left: 0px; 
 }
 
 .btn {
     background-color: #4CAF50;
     color: white;
-    padding: 8px 16px; /* нормальный, но аккуратный размер */
+    padding: 8px 16px; 
     text-decoration: none;
     border-radius: 5px;
-    font-size: 16px; /* нормальный шрифт, как у заголовков */
+    font-size: 16px; 
 }
 
 .btn:hover {
@@ -79,13 +78,10 @@ h2 {
 .header-with-button {
     display: flex;
     align-items: center;
-    gap: 35px; /* расстояние между заголовком и кнопкой */
+    gap: 35px;
     margin-bottom: 20px;
 }
 
-
-
-/* Форма (например, для анализа) */
 form {
     margin: 20px 0;
 }
@@ -97,7 +93,6 @@ input, select, button {
     border-radius: 4px;
 }
 
-/* Табы или секции */
 section {
     padding: 20px;
     margin: 10px 0;
@@ -106,7 +101,7 @@ section {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Таблица */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -115,21 +110,23 @@ table {
 
     table th, table td {
         padding: 12px;
-        text-align: left;
+        text-align: center;
         border-bottom: 1px solid #ddd;
     }
 
     table th {
         background-color: #f8f8f8;
+        text-align: center;
     }
 
-/* Строка итогов */
+
+/* РЎС‚СЂРѕРєР° РёС‚РѕРіРѕРІ */
 tfoot td {
     font-weight: bold;
     text-align: right;
 }
 
-/* Кнопки */
+
 button {
     background-color: #4CAF50;
     color: white;
