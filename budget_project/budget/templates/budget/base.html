@@ -36,6 +36,9 @@
                 <li><a href="{% url 'expense_list' %}">Расходы</a></li>
                 <li><a href="{% url 'analysis' %}">Анализ</a></li>
                 <li><a href="{% url 'logout' %}" style="color: red;">Выйти</a></li>
+                {% if user.is_superuser %}
+                <li><a href="{% url 'admin:index' %}" style="color: #808000; ">Режим администрирования</a></li>
+                {% endif %}
             </ul>
         </nav>
         {% else %}
