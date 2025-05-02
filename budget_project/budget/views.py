@@ -48,10 +48,8 @@ def incomes_view(request):
 
     incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date]).order_by('date')
 
-    # Подсчитываем общую сумму доходов за выбранный период
     total_income = incomes.aggregate(total=Sum('amount'))['total'] or 0
 
-    # Проверка, есть ли доходы
     no_incomes = incomes.count() == 0
 
     return render(request, 'budget/income_list.html', {'form': form, 'incomes': incomes, 'total_income': total_income, 'no_incomes': no_incomes})
@@ -86,7 +84,6 @@ def expense_list(request):
 
     total_expense = expenses.aggregate(total=Sum('amount'))['total'] or 0
 
-    # Проверка, есть ли доходы
     no_expenses = expenses.count() == 0
 
     return render(request, 'budget/expense_list.html', {'form': form, 'expenses': expenses, 'total_expense': total_expense, 'no_expenses': no_expenses})
@@ -200,26 +197,21 @@ def analysis_view(request):
         start_date = default_start_date
         end_date = default_end_date
 
-    # Фильтруем по датам
     incomes = Income.objects.filter(user=request.user, date__range=[start_date, end_date])
     expenses = Expense.objects.filter(user=request.user, date__range=[start_date, end_date])
 
-    # Группируем по категориям и вычисляем сумму
     incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
     expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
 
-    # Сортируем по алфавиту, но перемещаем "Другое" в конец
+    # Сортировка по алфавиту, перемещение "Другое" в конец
     def custom_sort(queryset):
         sorted_queryset = sorted(queryset, key=lambda x: x['category__name'])
-        # Перемещаем "Другое" в конец
         for i, item in enumerate(sorted_queryset):
             if item['category__name'] == 'Другое':
-                # Удаляем "Другое" из списка
                 sorted_queryset.append(sorted_queryset.pop(i))
                 break
         return sorted_queryset
 
-    # Применяем сортировку
     incomes_by_category = custom_sort(incomes_by_category)
     expenses_by_category = custom_sort(expenses_by_category)
 
