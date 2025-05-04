@@ -81,15 +81,18 @@ table {
     margin-top: 20px;
 }
 
-    table th, table td {
+    table td {
         padding: 12px;
-        text-align: center;
+        text-align: left;
         border-bottom: 1px solid #ddd;
     }
 
     table th {
         background-color: #f8f8f8;
         text-align: center;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
     }
 
 /* Строка итогов */

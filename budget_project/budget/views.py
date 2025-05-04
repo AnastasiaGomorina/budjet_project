@@ -20,10 +20,8 @@ def register(request):
     return render(request, 'budget/register.html', {'form': form})
 
 
+@login_required
 def incomes_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     today = date.today()
     default_start_date = date(today.year, today.month, 1)
     last_day = calendar.monthrange(today.year, today.month)[1]
@@ -54,10 +52,9 @@ def incomes_view(request):
 
     return render(request, 'budget/income_list.html', {'form': form, 'incomes': incomes, 'total_income': total_income, 'no_incomes': no_incomes})
 
-def expense_list(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
 
+@login_required
+def expense_list(request):
     today = date.today()
     default_start_date = date(today.year, today.month, 1)
     last_day = calendar.monthrange(today.year, today.month)[1]
@@ -88,15 +85,20 @@ def expense_list(request):
 
     return render(request, 'budget/expense_list.html', {'form': form, 'expenses': expenses, 'total_expense': total_expense, 'no_expenses': no_expenses})
 
+
+@login_required
 def delete_income(request, pk):
     income = get_object_or_404(Income, pk=pk, user=request.user)
     income.delete()
     return redirect('income_list')
 
+
+@login_required
 def delete_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
     expense.delete()
     return redirect('expense_list')
+
 
 @login_required
 def add_income(request):
@@ -111,6 +113,8 @@ def add_income(request):
         form = IncomeForm()
     return render(request, 'budget/add_income.html', {'form': form, 'income': None})
 
+
+@login_required
 def edit_income(request, pk):
     income = get_object_or_404(Income, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -121,6 +125,7 @@ def edit_income(request, pk):
     else:
         form = IncomeForm(instance=income)
     return render(request, 'budget/add_income.html', {'form': form, 'income': income})
+
 
 @login_required
 def add_expense(request):
@@ -135,6 +140,8 @@ def add_expense(request):
         form = ExpenseForm()
     return render(request, 'budget/add_expense.html', {'form': form, 'expense': None})
 
+
+@login_required
 def edit_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -145,6 +152,7 @@ def edit_expense(request, pk):
     else:
         form = ExpenseForm(instance=expense)
     return render(request, 'budget/add_expense.html', {'form': form, 'expense': expense})
+
 
 MONTHS_RU = {
     1: "Январь",
@@ -161,20 +169,19 @@ MONTHS_RU = {
     12: "Декабрь",
 }
 
+
+
 def home(request):
     if request.user.is_authenticated:
-        # Баланс за всё время
         total_income_all = Income.objects.filter(user=request.user).aggregate(total=Sum('amount'))['total'] or 0
         total_expense_all = Expense.objects.filter(user=request.user).aggregate(total=Sum('amount'))['total'] or 0
         balance = total_income_all - total_expense_all
 
-        # Даты текущего месяца
         today = date.today()
         start_date = date(today.year, today.month, 1)
         last_day = calendar.monthrange(today.year, today.month)[1]
         end_date = date(today.year, today.month, last_day)
 
-        # Доходы и расходы за текущий месяц
         total_income_month = Income.objects.filter(
             user=request.user,
             date__range=[start_date, end_date]
@@ -191,21 +198,13 @@ def home(request):
             'balance': balance,
             'total_income_month': total_income_month,
             'total_expense_month': total_expense_month,
-            'current_month': current_month_ru,  # например, "Апрель 2025"
+            'current_month': current_month_ru,
         })
-    else:
-        # Для неавторизованных пользователей передаются пустые значения
-        return render(request, 'budget/base.html', {
-            'total_income_month': 0,
-            'total_expense_month': 0,
-            'balance': 0,
-        })
+    return render(request, 'budget/base.html')
 
 
+@login_required
 def analysis_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     today = date.today()
     default_start_date = date(today.year, today.month, 1)
     last_day = calendar.monthrange(today.year, today.month)[1]
@@ -220,11 +219,9 @@ def analysis_view(request):
         })
 
     if form.is_valid():
-        # Если пользователь ввел период
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
     else:
-        # Иначе — текущий месяц
         start_date = default_start_date
         end_date = default_end_date
 
@@ -237,7 +234,6 @@ def analysis_view(request):
     incomes_by_category = incomes.values('category__name').annotate(total=Sum('amount'))
     expenses_by_category = expenses.values('category__name').annotate(total=Sum('amount'))
 
-    # Сортировка по алфавиту, перемещение "Другое" в конец
     def custom_sort(queryset):
         sorted_queryset = sorted(queryset, key=lambda x: x['category__name'])
         for i, item in enumerate(sorted_queryset):
@@ -256,7 +252,6 @@ def analysis_view(request):
         'no_incomes': no_incomes,
         'no_expenses': no_expenses
     })
-
 
 
 def logout_view(request):
